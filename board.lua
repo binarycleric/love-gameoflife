@@ -1,47 +1,71 @@
-Board = {}
+Board = {
+  cells = {}
+}
 
-function Board:setup()
-  self.cells = {}
+function Board:init_cells(width, height)
+  for x=0, width do
+    for y=0, height do
+      local cell = Cell.create({x=x, y=y})
+      cell.alive = false
+
+      table.insert(self.cells, cell) 
+    end
+  end
 end
 
 function Board:add_cell(x, y)
-  self.cells[x] = self.cells[x] or {}
-  self.cells[x][y] = true
+  local cell = Cell.create({x=x, y=y})
+
+  table.insert(self.cells, cell) 
 end
 
-function Board:alive_at(x, y)
-  if self.cells[x] then
-    if self.cells[x][y] then
-      return true
+function Board:to_life(x, y)
+  self:cell_at(x, y).alive = true
+end
+
+-- Aweful, slow, slow, awful, ARGH!!!!!
+function Board:cell_at(x, y)
+  for k, cell in pairs(self.cells) do
+    if cell.x == x and cell.y == y then
+      return cell
     end
   end
-  return false
+
+  return dead_cell
 end
 
-function Board:draw(cell_size)
-  for x, ys in pairs(self.cells) do
-    for y, alive in pairs(ys) do
-      if alive then
-        Board.drawCell(x, y, cell_size)
+function Board:evolve()
+  local cell_life_map = {}
+
+  for k, cell in pairs(self.cells) do
+    local count = 0
+
+    for x=-1, 1 do
+      for y=-1, 1 do
+
+        if not(x == 0 and y == 0) then
+          local cell = self:cell_at(cell.x + x, cell.y + y)
+          if cell and cell.alive then
+            count = count + 1
+          end
+        end
+      end
+    end
+
+    if cell.alive then
+      if count == 2 or count == 3 then
+        cell_life_map[k] = true
+      else
+        cell_life_map[k] = false
+      end
+    else
+      if count == 3 then
+        cell_life_map[k] = true
       end
     end
   end
+
+  for k, cell in pairs(self.cells) do
+    cell.alive = cell_life_map[k]
+  end
 end
-
-function Board.drawCell(x, y, cell_size)
-  love.graphics.setColor(0, 250, 0)
-  love.graphics.rectangle("fill", 
-                          x * cell_size, 
-                          y * cell_size, 
-                          cell_size, 
-                          cell_size)
-
-  love.graphics.setColor(250, 250, 250)
-  love.graphics.rectangle("line", 
-                          x * cell_size, 
-                          y * cell_size, 
-                          cell_size, 
-                          cell_size)
-end
-
-

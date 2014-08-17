@@ -1,31 +1,41 @@
 require "board"
+require "cell"
+require "graphics"
+
 local last_age = 0
 
 function love.load()
   love.graphics.setBackgroundColor(25, 25, 25)
   love.window.setMode(800, 650)
 
-  -- build init cells
-  Board:add(1, 1)
-  Board:add(1, 2)
-  Board:add(1, 3)
+  Graphics.cell_size = 25
 
-  Board:add(2, 1)
-  Board:add(2, 2)
+  Board:init_cells(800/Graphics.cell_size, 650/Graphics.cell_size)
 
-  Board:add(3, 2)
+  math.randomseed( os.time() )
+
+  for i=1, 200 do
+    local x = math.random(0, 800/Graphics.cell_size)
+    local y = math.random(0, 650/Graphics.cell_size) 
+
+    Board:to_life(x, y)
+  end
 end
 
 function love.update(dt)
   last_age = last_age + dt
 
-  if last_age >= 1 then
-    Board:age()
+  if last_age >= 0.5 then
+    Board:evolve()
     last_age = 0
   end
 end
 
 function love.draw()
-  Board:draw(25)
+  for k, cell in pairs(Board.cells) do
+    if cell.alive then
+      Graphics.draw_cell(cell)
+    end
+  end
 end
 
