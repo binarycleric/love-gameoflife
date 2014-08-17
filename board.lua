@@ -1,5 +1,10 @@
 Board = {cells = {}}
 
+function Board:evolve()
+
+end
+
+
 function Board:draw(cell_size)
   for x, ys in pairs(self.cells) do
     for y, alive in pairs(ys) do
@@ -50,16 +55,21 @@ function Board.drawCell(x, y, cell_size)
                           cell_size)
 end
 
+-- Any live cell with fewer than two live neighbours dies, as 
+-- if caused by under-population.
+--
+-- Any live cell with two or three live neighbours lives on 
+-- to the next generation.
+--
+-- Any live cell with more than three live neighbours dies, 
+-- as if by overcrowding.
+--
+-- Any dead cell with exactly three live neighbours becomes a live 
+-- cell, as if by reproduction.
 function Board.is_alive(num_neighbors)
-  if num_neighbors < 2 then
-    return false 
-  end
-
   if num_neighbors == 2 or num_neighbors == 3 then
     return true 
   end
 
-  if num_neighbors > 4 then
-    return false 
-  end
+  return false 
 end
