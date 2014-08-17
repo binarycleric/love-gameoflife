@@ -1,5 +1,6 @@
 Board = {
-  cells = {}
+  cells = {},
+  lookup_table = {}
 }
 
 function Board:init_cells(width, height)
@@ -8,7 +9,8 @@ function Board:init_cells(width, height)
       local cell = Cell.create({x=x, y=y})
       cell.alive = false
 
-      table.insert(self.cells, cell) 
+      table.insert(self.cells, cell)
+      Board:add_cell_to_lookup_table(cell)
     end
   end
 end
@@ -23,15 +25,21 @@ function Board:to_life(x, y)
   self:cell_at(x, y).alive = true
 end
 
--- Aweful, slow, slow, awful, ARGH!!!!!
-function Board:cell_at(x, y)
-  for k, cell in pairs(self.cells) do
-    if cell.x == x and cell.y == y then
-      return cell
+function Board:add_cell_to_lookup_table(cell)
+  self.lookup_table[cell.x] = self.lookup_table[cell.x] or {}
+  self.lookup_table[cell.x][cell.y] = cell 
+end
+
+function Board:from_lookup_table(x, y)
+  if self.lookup_table[x] then
+    if self.lookup_table[x][y] then
+      return self.lookup_table[x][y]
     end
   end
+end
 
-  return dead_cell
+function Board:cell_at(x, y)
+  return self:from_lookup_table(x, y)
 end
 
 function Board:evolve()
