@@ -1,9 +1,22 @@
-Board = {cells = {}}
+Board = {}
 
-function Board:evolve()
-
+function Board:setup()
+  self.cells = {}
 end
 
+function Board:add_cell(x, y)
+  self.cells[x] = self.cells[x] or {}
+  self.cells[x][y] = true
+end
+
+function Board:alive_at(x, y)
+  if self.cells[x] then
+    if self.cells[x][y] then
+      return true
+    end
+  end
+  return false
+end
 
 function Board:draw(cell_size)
   for x, ys in pairs(self.cells) do
@@ -14,30 +27,6 @@ function Board:draw(cell_size)
     end
   end
 end
-
-function Board:add(x, y)
-  self.cells[x] = self.cells[x] or {}
-  self.cells[x][y] = true
-end
-
-function Board:kill(x, y)
-  if self.cells[x][y] then
-    table.remove(self.cells[x], y)
-  end
-end
-
-function Board:age()
-  for x=1, #self.cells do
-    if self.cells[x] then
-      for y=1, #self.cells[x] do
-      
-      end
-    end
-  end
-end
-
-
-
 
 function Board.drawCell(x, y, cell_size)
   love.graphics.setColor(0, 250, 0)
@@ -55,21 +44,4 @@ function Board.drawCell(x, y, cell_size)
                           cell_size)
 end
 
--- Any live cell with fewer than two live neighbours dies, as 
--- if caused by under-population.
---
--- Any live cell with two or three live neighbours lives on 
--- to the next generation.
---
--- Any live cell with more than three live neighbours dies, 
--- as if by overcrowding.
---
--- Any dead cell with exactly three live neighbours becomes a live 
--- cell, as if by reproduction.
-function Board.is_alive(num_neighbors)
-  if num_neighbors == 2 or num_neighbors == 3 then
-    return true 
-  end
 
-  return false 
-end

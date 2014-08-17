@@ -2,23 +2,21 @@ require "board"
 
 describe("Board", function()
 
-  describe(".is_alive", function()
+  setup(function()
+    Board:setup()
+  end)
 
-    it("dies when has < 2 neighbors", function()
-      assert.False(Board.is_alive(0))
-      assert.False(Board.is_alive(1))
+  describe(":alive_at", function()
+
+    it("returns false if cell is dead", function()
+      assert.False(Board:alive_at(1,1))
     end)
 
-    it("lives with 2 or 3 neighbors", function()
-      assert.True(Board.is_alive(2))
-      assert.True(Board.is_alive(3))
-    end)
+    it("returns true if cell is alive", function()
+      Board:add_cell(1,1)
 
-    it("dies with 4 neighbors", function()
-      assert.False(Board.is_alive(4))
-      assert.False(Board.is_alive(5))
+      assert.True(Board:alive_at(1,1))
     end)
-
   end)
 
 end)
