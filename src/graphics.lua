@@ -1,5 +1,5 @@
 Graphics = {
-  cell_size = 25
+  cell_size = 5
 }
 
 function Graphics.draw_cell(cell)

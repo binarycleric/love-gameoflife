@@ -1,6 +1,7 @@
 Board = {
   cells = {},
-  lookup_table = {}
+  lookup_table = {},
+  last_evolve = 0
 }
 
 function Board:init_cells(width, height)
@@ -40,6 +41,14 @@ end
 
 function Board:cell_at(x, y)
   return self:from_lookup_table(x, y)
+end
+
+function Board:update(dt)
+  self.last_evolve = self.last_evolve + dt
+  if self.last_evolve >= 0.15 then
+    Board:evolve()
+    self.last_evolve = 0
+  end
 end
 
 function Board:evolve()
