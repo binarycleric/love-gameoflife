@@ -1,6 +1,6 @@
-require "board"
-require "cell"
-require "graphics"
+require "src/board"
+require "src/cell"
+require "src/graphics"
 
 -- http://en.wikipedia.org/wiki/Conway's_Game_of_Life
 function love.load()
