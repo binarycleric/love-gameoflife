@@ -5,8 +5,8 @@ Board = {
 }
 
 function Board:init_cells(width, height)
-  for x=0, width do
-    for y=0, height do
+  for x=1, width do
+    for y=1, height do
       local cell = Cell.create({x=x, y=y})
       cell.alive = false
 
@@ -16,10 +16,8 @@ function Board:init_cells(width, height)
   end
 end
 
-function Board:add_cell(x, y)
-  local cell = Cell.create({x=x, y=y})
-
-  table.insert(self.cells, cell) 
+function Board:cell_at(x, y)
+  return self:from_lookup_table(x, y)
 end
 
 function Board:to_life(x, y)
@@ -39,10 +37,6 @@ function Board:from_lookup_table(x, y)
   end
 end
 
-function Board:cell_at(x, y)
-  return self:from_lookup_table(x, y)
-end
-
 function Board:update(dt)
   self.last_evolve = self.last_evolve + dt
   if self.last_evolve >= 0.15 then
@@ -59,7 +53,6 @@ function Board:evolve()
 
     for x=-1, 1 do
       for y=-1, 1 do
-
         if not(x == 0 and y == 0) then
           local cell = self:cell_at(cell.x + x, cell.y + y)
           if cell and cell.alive then

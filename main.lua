@@ -13,8 +13,8 @@ function love.load()
   math.randomseed(os.time())
 
   for i=1, math.random(10000, 25000) do
-    local x = math.random(0, 800/Graphics.cell_size)
-    local y = math.random(0, 650/Graphics.cell_size) 
+    local x = math.random(1, 800/Graphics.cell_size)
+    local y = math.random(1, 650/Graphics.cell_size) 
 
     Board:to_life(x, y)
   end
